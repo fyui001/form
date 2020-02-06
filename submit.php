@@ -1,5 +1,5 @@
 <?php
-Class Submit {
+class Submit {
     function __construct($gotten_post) {
 
     }
