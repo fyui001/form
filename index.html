@@ -112,6 +112,8 @@
 
             const preAge = document.createElement("option");
             preAge.appendChild(document.createTextNode("選択してください"));
+            preAge.setAttribute("value", "");
+
             ageSelector.appendChild(preAge);
 
             const minAge = 6;
@@ -131,20 +133,25 @@
         const confirmButton = async () => {
             const mail = document.getElementById('mail').value;
             const reMail = document.getElementById('r_mail').value;
+
             const name = document.getElementById('name').value;
+
             const ageSelector = document.getElementById('age_selector');
             const age = ageSelector.options[ageSelector.selectedIndex].value;
+
             const phoneNumber = document.getElementById('phone_number').value;
+
             const typeSelector = document.getElementById('type');
             const type = typeSelector.options[typeSelector.selectedIndex].value;
+
             const content = document.getElementById('content').value;
 
             const formContentsObj = {
                 mail: mail,
-                reMail: reMail,
+                re_mail: reMail,
                 name: name,
                 age: age,
-                phoneNumber: phoneNumber,
+                phone_number: phoneNumber,
                 type: type,
                 content: content
             };
@@ -160,6 +167,8 @@
                 });
 
                 if (!res.ok) throw new Error("Server Error");
+
+                console.log(await res.json());
             } catch (error) {
                 alert(error);
             }
