@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>お問い合わせフォーム</title>
-        <link rel="stylesheet" href="reboot.css">
-        <link rel="stylesheet" href="Mystyle.css">
-        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    </head>
-    <body>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>お問い合わせフォーム</title>
+    <link rel="stylesheet" href="reboot.css">
+    <link rel="stylesheet" href="Mystyle.css">
+</head>
+
+<body>
     <header>
         <div id="header">
-            <p class="title">にゃーん</p>
+            <p class="title">Form</p>
         </div>
-    </header><!--ここまでがheader-->
+    </header>
+
     <main>
         <div class="form_wrapper">
-
             <div class="form_description">
                 <h1 class="form_titile">お問い合わせフォーム</h1>
                 <div class="description">
@@ -26,142 +27,143 @@
                 </div>
             </div>
 
-            <form action="./confirm.php" method="post" name="form" id="form">
+            <div class="form_content_wrapper">
 
-                <div class="form_content_wrapper">
-
-                    <!-- メールアドレス -->
-                    <div class="form_content">
-                        <h2>メールアドレス<span class="required">(必須)</span></h2>
-                        <div class="mail">
-                            <label>
-                                <p>ご返信先メールアドレス</p>
-                                <input type="text" name="mail" autocomplete="off">
-                            </label>
-                        </div>
-                        <div class="mail_sub">
-                            <label>
-                                <p>確認のため、もう一度入力してください。</p>
-                                <input type="text" name="r_mail" autocomplete="off">
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- 名前 -->
-                    <div class="form_content">
+                <!-- メールアドレス -->
+                <div class="form_content">
+                    <h2>メールアドレス<span class="required">(必須)</span></h2>
+                    <div class="mail">
                         <label>
-                            <h2>氏名<span class="required">(必須)</span></h2>
-                            <input type="text" name="name" autocomplete="off">
-                        </label>
-
-                    </div>
-
-                    <!--年齢-->
-                    <div class="form_content">
-                        <label>
-                            <h2>年齢</h2>
-                            <select name="age" class="age_selector">
-
-                            </select>
+                            <p>ご返信先メールアドレス</p>
+                            <input type="text" id="mail" name="mail" autocomplete="off">
                         </label>
                     </div>
-
-                    <!-- 電話番号 -->
-                    <div class="form_content">
+                    <div class="mail_sub">
                         <label>
-                            <h2>ご連絡先電話番号</h2>
-                            <input type="tel" name="phone_num" value="" autocomplete="off" />
+                            <p>確認のため、もう一度入力してください。</p>
+                            <input type="text" id="r_mail" name="r_mail" autocomplete="off">
                         </label>
                     </div>
-
-                    <!-- 問い合わせ種類 -->
-                    <div class="form_content">
-                        <label>
-                            <h2>お問い合わせの種類 <span class="required">(必須)</span></h2>
-                            <select name="types" class="types">
-                                <option value="">選択してください</option>
-                                <option value="料金に関するお問い合わせ">料金に関するお問い合わせ</option>
-                                <option value="サービスに関するお問い合わせ">サービスに関するお問い合わせ</option>
-                                <option value="ご意見、ご要望">ご意見、ご要望</option>
-                                <option value="その他お問い合わせ">その他お問い合わせ</option>
-                            </select>
-                        </label>
-                    </div>
-
-                    <!-- お問い合わせ内容 -->
-                    <div class="form_content">
-                        <div class="contents">
-                            <label>
-                                <h2>お問い合わせの内容<span class="required">(必須)</span></h2>
-                                <p>200文字まで</p>
-                                <textarea name="content" maxlength="200" class="content"></textarea>
-                            </label>
-                        </div>
-                    </div>
-
-                    <button type="button" class="but">確認</button>
                 </div>
 
-            </form><!--ここまでがform-->
+                <!-- 名前 -->
+                <div class="form_content">
+                    <label>
+                        <h2>氏名<span class="required">(必須)</span></h2>
+                        <input type="text" id="name" name="name" autocomplete="off">
+                    </label>
+
+                </div>
+
+                <!--年齢-->
+                <div class="form_content">
+                    <label>
+                        <h2>年齢</h2>
+                        <select name="age" id="age_selector">
+
+                        </select>
+                    </label>
+                </div>
+
+                <!-- 電話番号 -->
+                <div class="form_content">
+                    <label>
+                        <h2>ご連絡先電話番号</h2>
+                        <input type="tel" id="phone_number" name="phone_number" value="" autocomplete="off" />
+                    </label>
+                </div>
+
+                <!-- 問い合わせ種類 -->
+                <div class="form_content">
+                    <label>
+                        <h2>お問い合わせの種類 <span class="required">(必須)</span></h2>
+                        <select id="type" name="types" class="types">
+                            <option value="">選択してください</option>
+                            <option value="料金に関するお問い合わせ">料金に関するお問い合わせ</option>
+                            <option value="サービスに関するお問い合わせ">サービスに関するお問い合わせ</option>
+                            <option value="ご意見、ご要望">ご意見、ご要望</option>
+                            <option value="その他お問い合わせ">その他お問い合わせ</option>
+                        </select>
+                    </label>
+                </div>
+
+                <!-- お問い合わせ内容 -->
+                <div class="form_content">
+                    <div class="contents">
+                        <label>
+                            <h2>お問い合わせの内容<span class="required">(必須)</span></h2>
+                            <p>200文字まで</p>
+                            <textarea id="content" name="content" maxlength="200" class="content"></textarea>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="button" class="but" onClick="confirmButton();">確認</button>
+            </div>
+
         </div>
+    </main>
 
-
-    </main><!--ここまでがmain-->
     <footer></footer>
 
     <script>
+        const age = () => {
+            const ageSelector = document.getElementById("age_selector");
 
-    addEventListener('load', () => {
-      let i
-      let ageSelector = document.getElementsByClassName('age_selector')
-      let option = document.createElement('option')
-      $('.age_selector').prepend('<option value="">選択してください</option>')
-      for (i=0; i<95; i++) {
-        let j=i
-        $('.age_selector').append(`<option value="${j+6}">${j+6}</option>`)
-      }
-    })
+            const preAge = document.createElement("option");
+            preAge.appendChild(document.createTextNode("選択してください"));
+            ageSelector.appendChild(preAge);
 
-      $('.but').click( (event) => {
-        event.preventDefault()
+            const minAge = 6;
+            const maxAge = 100;
 
-        //formデータの取得
-        let mail = $('.mail').val()
-        let r_mail = $('.r_mail').val()
-        let name = $('.name').val()
-        let age = $('.age').val()
-        let phone_num = $('.phone_num').val()
-        let type = $('.types option:selected').text()
-        let content = $('.content').val()
+            for (let _age = minAge; _age <= maxAge; _age++) {
+                const specAge = document.createElement("option");
+                specAge.setAttribute("value", _age);
+                specAge.appendChild(document.createTextNode(_age));
 
-        $.ajax({
-          async: false,
-          url: '/confirm.php',
-          dataType: 'json',
-          type: 'POST',
-          data: {
-            mail: mail,
-            r_mail: r_mail,
-            name: name,
-            age: age,
-            phone_num: phone_num,
-            type: type,
-            content: content,
-          }
-        }).then((result) => {
-          if (!result.status) {
-            alert(result.message)
-            $('html,body').animate({ scrollTop: 0 }, { duration: 120 })
-        } else {
-            $('#form').submit()
+                ageSelector.appendChild(specAge);
+            }
         }
-        }).catch((e) => {
-            alert('エラーが発生しました')
-        })
 
-      })
+        document.body.onload = age;
 
+        const confirmButton = async () => {
+            const mail = document.getElementById('mail').value;
+            const reMail = document.getElementById('r_mail').value;
+            const name = document.getElementById('name').value;
+            const ageSelector = document.getElementById('age_selector');
+            const age = ageSelector.options[ageSelector.selectedIndex].value;
+            const phoneNumber = document.getElementById('phone_number').value;
+            const typeSelector = document.getElementById('type');
+            const type = typeSelector.options[typeSelector.selectedIndex].value;
+            const content = document.getElementById('content').value;
 
+            const formContentsObj = {
+                mail: mail,
+                reMail: reMail,
+                name: name,
+                age: age,
+                phoneNumber: phoneNumber,
+                type: type,
+                content: content
+            };
+
+            try {
+                const res = await fetch("submit.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json;charset=utf-8"
+                    },
+                    mode: "same-origin",
+                    body: JSON.stringify(formContentsObj)
+                });
+
+                if (!res.ok) throw new Error("Server Error");
+            } catch (error) {
+                alert(error);
+            }
+        }
     </script>
-    </body>
+</body>
 </html>
