@@ -17,9 +17,9 @@
     </header>
 
     <main>
-        <div class="form_wrapper">
+        <div id="form_wrapper" class="form_wrapper">
             <div class="form_description">
-                <h1 class="form_titile">お問い合わせフォーム</h1>
+                <h1 class="form_title">お問い合わせフォーム</h1>
                 <div class="description">
                     <p>※個人情報の取り扱いについて</p>
                     <p>ご入力いただきましたお客様の個人情報は、本お問い合わせに関する回答以外の目的には利用いたしません。<br></p>
@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="form_content_wrapper">
+            <div id="form_content_wrapper" class="form_content_wrapper">
 
                 <!-- メールアドレス -->
                 <div class="form_content">
@@ -98,7 +98,7 @@
                     </div>
                 </div>
 
-                <button type="button" class="but" onClick="confirmButton();">確認</button>
+                <button type="button" class="but" onClick="confirm();">確認</button>
             </div>
 
         </div>
@@ -107,6 +107,8 @@
     <footer></footer>
 
     <script>
+
+        // 年齢セレクタの展開
         const age = () => {
             const ageSelector = document.getElementById("age_selector");
 
@@ -130,32 +132,37 @@
 
         document.body.onload = age;
 
-        const confirmButton = async () => {
-            const mail = document.getElementById('mail').value;
-            const reMail = document.getElementById('r_mail').value;
+        // 以前のinerHTMLを保持
+        let prev = ""
+        // 入力値を保持
+        let contents = {};
+        // form_wrapper エレメント
+        let formWrapperElement = document.getElementById("form_wrapper");
+        // バックエンドからのレスポンス
+        let response = {};
 
-            const name = document.getElementById('name').value;
+        const thanks = () => {
+            let thanksPage = '<h1 class="form_title">完了</h1>'
+            thanksPage += '<p>サーバへ送信が完了しました。後ほどご連絡いたします。</p>';
+            formWrapperElement.innerHTML = thanksPage;
+        }
 
-            const ageSelector = document.getElementById('age_selector');
-            const age = ageSelector.options[ageSelector.selectedIndex].value;
+        const error = () => {
+            let errorPage = '<h1 class="form_title">エラー</h1>'
 
-            const phoneNumber = document.getElementById('phone_number').value;
+            if (response.database.error === "validation error") {
+                errorPage += '<div class=form_content>';
+                errorPage += '<p>それぞれの欄を再度ご確認ください。</p>';
+                errorPage += '</div>'
+                errorPage += '<button type="button" class="but" onClick="cancel();">戻る</button>';
+            } else {
+                errorPage += '<p>サーバへの送信時にエラーが発生しました。後ほどお試しください。</p>';
+            }
 
-            const typeSelector = document.getElementById('type');
-            const type = typeSelector.options[typeSelector.selectedIndex].value;
+            formWrapperElement.innerHTML = errorPage;
+        }
 
-            const content = document.getElementById('content').value;
-
-            const formContentsObj = {
-                mail: mail,
-                reMail: reMail,
-                name: name,
-                age: age,
-                phoneNumber: phoneNumber,
-                type: type,
-                content: content
-            };
-
+        const submit = async () => {
             try {
                 const res = await fetch("submit.php", {
                     method: "POST",
@@ -163,16 +170,67 @@
                         "Content-Type": "application/json;charset=utf-8"
                     },
                     mode: "same-origin",
-                    body: JSON.stringify(formContentsObj)
+                    body: JSON.stringify(contents)
                 });
 
-                if (!res.ok) throw new Error("Server Error");
+                if (!res.ok) throw new Error("サーバ側のエラーにより、サーバへ送信できませんでした。");
 
-                console.log(await res.json());
+                response = await res.json();
+
+                if (response.database.successful) {
+                    thanks();
+                } else {
+                    error();
+                }
+
             } catch (error) {
                 alert(error);
             }
         }
+
+        const cancel = () => {
+            formWrapperElement.innerHTML = prev;
+        }
+
+        const confirm = () => {
+            const ageSelector = document.getElementById('age_selector');
+            const typeSelector = document.getElementById('type');
+
+            contents = {
+                mail: document.getElementById('mail').value,
+                reMail: document.getElementById('r_mail').value,
+                name: document.getElementById('name').value,
+                age: ageSelector.options[ageSelector.selectedIndex].value,
+                phoneNumber: document.getElementById('phone_number').value,
+                type: typeSelector.options[typeSelector.selectedIndex].value,
+                content: document.getElementById('content').value
+            };
+
+            prev = formWrapperElement.innerHTML;
+
+            let page = '';
+            page += '<h1 class="form_title">確認</h1>';
+            page += '<div class=form_content>';
+            page += '<p>以下の内容で送信します。</p>';
+            page += '<h2 class=form_content>メールアドレス</h2>'
+            page += `<p>${contents.mail}</p>`;
+            page += '<h2 class=form_content>お名前</h2>';
+            page += `<p>${contents.name}</p>`;
+            page += '<h2 class=form_content>ご年齢</h2>';
+            page += `<p>${contents.age}</p>`;
+            page += '<h2 class=form_content>電話番号</h2>';
+            page += `<p>${contents.phoneNumber}</p>`;
+            page += '<h2 class=form_content>お問い合わせの種類</h2>';
+            page += `<p>${contents.type}</p>`;
+            page += '<h2 class=form_content>お問い合わせの内容</h2>';
+            page += `<p>${contents.content}</p>`;
+            page += '</div>';
+            page += '<button type="button" class="but" onClick="cancel();">キャンセル</button>';
+            page += '<button type="button" class="but" onClick="submit();">送信</button>';
+
+            formWrapperElement.innerHTML = page;
+        }
     </script>
 </body>
+
 </html>
