@@ -7,17 +7,17 @@ class Submit {
         $response = [
             "validationStates" => $validationStates,
             "contents" => $contents,
-            "databaseResult" => ""
+            "database" => ""
         ];
 
         if ($this->isValidationPassed($validationStates)) {
             $databaseResult = $this->insertDatabase($contents);
 
-            $response["databaseResult"] = $databaseResult;
+            $response["database"] = $databaseResult;
         } else {
-            $response["databaseResult"] = [
+            $response["database"] = [
                 "successful" => false,
-                "message" => "vaildation error",
+                "error" => "validation error",
             ];
         }
 
@@ -164,12 +164,12 @@ class Submit {
 
             return [
                 "successful" => true,
-                "errorMessage" => ""
+                "error" => ""
             ];
         } catch(PDOException $error) {
             return [
                 "successful" => false,
-                "errorMessage" => $error->getMessage()
+                "error" => $error->getMessage()
             ];
         }
     }
