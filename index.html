@@ -17,7 +17,7 @@
     </header>
 
     <main>
-        <div id="form_wrapper" class="form_wrapper">
+        <div id="form" class="form_wrapper">
             <div class="form_description">
                 <h1 class="form_title">お問い合わせフォーム</h1>
                 <div class="description">
@@ -35,13 +35,13 @@
                     <div class="mail">
                         <label>
                             <p>ご返信先メールアドレス</p>
-                            <input type="text" id="mail" name="mail" autocomplete="off">
+                            <input type="text" id="mail" name="mail" autocomplete="off" required>
                         </label>
                     </div>
                     <div class="mail_sub">
                         <label>
                             <p>確認のため、もう一度入力してください。</p>
-                            <input type="text" id="r_mail" name="r_mail" autocomplete="off">
+                            <input type="text" id="r_mail" name="r_mail" autocomplete="off" required>
                         </label>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                 <div class="form_content">
                     <label>
                         <h2>氏名<span class="required">(必須)</span></h2>
-                        <input type="text" id="name" name="name" autocomplete="off">
+                        <input type="text" id="name" name="name" autocomplete="off" required>
                     </label>
 
                 </div>
@@ -77,7 +77,7 @@
                 <div class="form_content">
                     <label>
                         <h2>お問い合わせの種類 <span class="required">(必須)</span></h2>
-                        <select id="type" name="types" class="types">
+                        <select id="type" name="types" class="types" required>
                             <option value="">選択してください</option>
                             <option value="料金に関するお問い合わせ">料金に関するお問い合わせ</option>
                             <option value="サービスに関するお問い合わせ">サービスに関するお問い合わせ</option>
@@ -93,12 +93,12 @@
                         <label>
                             <h2>お問い合わせの内容<span class="required">(必須)</span></h2>
                             <p>200文字まで</p>
-                            <textarea id="content" name="content" maxlength="200" class="content"></textarea>
+                            <textarea id="content" name="content" maxlength="200" class="content" required></textarea>
                         </label>
                     </div>
                 </div>
 
-                <button type="button" class="but" onClick="confirm();">確認</button>
+                <button type="button" class="but" onClick="form.confirm();">確認</button>
             </div>
 
         </div>
@@ -107,7 +107,6 @@
     <footer></footer>
 
     <script>
-
         // 年齢セレクタの展開
         const age = () => {
             const ageSelector = document.getElementById("age_selector");
@@ -132,104 +131,102 @@
 
         document.body.onload = age;
 
-        // 以前のinerHTMLを保持
-        let prev = ""
-        // 入力値を保持
-        let contents = {};
-        // form_wrapper エレメント
-        let formWrapperElement = document.getElementById("form_wrapper");
-        // バックエンドからのレスポンス
-        let response = {};
+        class Form {
+            constructor() {
+                console.log('called!');
 
-        const thanks = () => {
-            let thanksPage = '<h1 class="form_title">完了</h1>'
-            thanksPage += '<p>サーバへ送信が完了しました。後ほどご連絡いたします。</p>';
-            formWrapperElement.innerHTML = thanksPage;
-        }
-
-        const error = () => {
-            let errorPage = '<h1 class="form_title">エラー</h1>'
-
-            if (response.database.error === "validation error") {
-                errorPage += '<div class=form_content>';
-                errorPage += '<p>それぞれの欄を再度ご確認ください。</p>';
-                errorPage += '</div>'
-                errorPage += '<button type="button" class="but" onClick="cancel();">戻る</button>';
-            } else {
-                errorPage += '<p>サーバへの送信時にエラーが発生しました。後ほどお試しください。</p>';
+                this.prevHtml = "";
+                this.PrevContents = this.content;
+                this.response = {};
             }
 
-            formWrapperElement.innerHTML = errorPage;
-        }
+            get form() {
+                return document.getElementById('form');
+            }
 
-        const submit = async () => {
-            try {
-                const res = await fetch("submit.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json;charset=utf-8"
-                    },
-                    mode: "same-origin",
-                    body: JSON.stringify(contents)
-                });
+            get contents() {
+                const ageSelector = document.getElementById('age_selector');
+                const typeSelector = document.getElementById('type');
 
-                if (!res.ok) throw new Error("サーバ側のエラーにより、サーバへ送信できませんでした。");
+                return {
+                    mail: document.getElementById('mail').value,
+                    reMail: document.getElementById('r_mail').value,
+                    name: document.getElementById('name').value,
+                    age: ageSelector.options[ageSelector.selectedIndex].value,
+                    phoneNumber: document.getElementById('phone_number').value,
+                    type: typeSelector.options[typeSelector.selectedIndex].value,
+                    content: document.getElementById('content').value
+                };
+            }
 
-                response = await res.json();
+            writeHtml(html) {
+                this.form.innerHTML = html;
+            }
 
-                if (response.database.successful) {
-                    thanks();
-                } else {
-                    error();
+            validation() {
+            }
+
+            confirm() {
+                this.PrevContents = this.contents;
+                this.prevHtml = this.form.innerHTML;
+
+                writeHtml(
+                    '<h1 class="form_title">確認</h1>' +
+                    '<div class=form_content>' +
+                    '<p>以下の内容で送信します。</p>' +
+                    '<h2 class=form_content>メールアドレス</h2>' +
+                    `<p>${contents.mail}</p>` +
+                    '<h2 class=form_content>お名前</h2>' +
+                    `<p>${contents.name}</p>` +
+                    '<h2 class=form_content>ご年齢</h2>' +
+                    `<p>${contents.age}</p>` +
+                    '<h2 class=form_content>電話番号</h2>' +
+                    `<p>${contents.phoneNumber}</p>` +
+                    '<h2 class=form_content>お問い合わせの種類</h2>' +
+                    `<p>${contents.type}</p>` +
+                    '<h2 class=form_content>お問い合わせの内容</h2>' +
+                    `<p>${contents.content}</p>` +
+                    '</div>' +
+                    '<button type="button" class="but" onClick="form.cancel();">キャンセル</button>' +
+                    '<button type="button" class="but" onClick="form.submit();">送信</button>'
+                );
+            }
+
+            async submit() {
+                try {
+                    const _response = await fetch("submit.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json;charset=utf-8"
+                        },
+                        mode: "same-origin",
+                        body: JSON.stringify(this.contents)
+                    });
+
+                    if (!_response.ok) throw new Error("サーバ側のエラーにより、サーバへ送信できませんでした。");
+
+                    Promise.resolve(response = await _response.json());
+                } catch (error) {
+                    Promise.reject(error);
                 }
+            }
 
-            } catch (error) {
-                alert(error);
+            cancel() {
+                this.form.innerHTML = this.prevHtml;
+                document.getElementById('mail').value = this.PrevContents.mail;
+                document.getElementById('r_mail').value = this.PrevContents.rMail;
+                document.getElementById('name').value = this.PrevContents.name;
+                document.getElementById('age_selector').value = this.PrevContents.age;
+                document.getElementById('type').value = this.PrevContents.type;
+                document.getElementById('phone_number').value = this.PrevContents.phoneNumber;
+                document.getElementById('content').value = this.PrevContents.content;
+
+                this.prevHtml = this.form.innerHTML;
+                this.PrevContents = this.contents;
             }
         }
 
-        const cancel = () => {
-            formWrapperElement.innerHTML = prev;
-        }
-
-        const confirm = () => {
-            const ageSelector = document.getElementById('age_selector');
-            const typeSelector = document.getElementById('type');
-
-            contents = {
-                mail: document.getElementById('mail').value,
-                reMail: document.getElementById('r_mail').value,
-                name: document.getElementById('name').value,
-                age: ageSelector.options[ageSelector.selectedIndex].value,
-                phoneNumber: document.getElementById('phone_number').value,
-                type: typeSelector.options[typeSelector.selectedIndex].value,
-                content: document.getElementById('content').value
-            };
-
-            prev = formWrapperElement.innerHTML;
-
-            let page = '';
-            page += '<h1 class="form_title">確認</h1>';
-            page += '<div class=form_content>';
-            page += '<p>以下の内容で送信します。</p>';
-            page += '<h2 class=form_content>メールアドレス</h2>'
-            page += `<p>${contents.mail}</p>`;
-            page += '<h2 class=form_content>お名前</h2>';
-            page += `<p>${contents.name}</p>`;
-            page += '<h2 class=form_content>ご年齢</h2>';
-            page += `<p>${contents.age}</p>`;
-            page += '<h2 class=form_content>電話番号</h2>';
-            page += `<p>${contents.phoneNumber}</p>`;
-            page += '<h2 class=form_content>お問い合わせの種類</h2>';
-            page += `<p>${contents.type}</p>`;
-            page += '<h2 class=form_content>お問い合わせの内容</h2>';
-            page += `<p>${contents.content}</p>`;
-            page += '</div>';
-            page += '<button type="button" class="but" onClick="cancel();">キャンセル</button>';
-            page += '<button type="button" class="but" onClick="submit();">送信</button>';
-
-            formWrapperElement.innerHTML = page;
-        }
+        const form = new Form();
     </script>
 </body>
 

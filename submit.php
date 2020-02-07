@@ -26,12 +26,6 @@ class Submit {
 
     private function adjustContents($contents) {
         $adjustedContents = $contents;
-
-        // 電話番号欄が空の場合,0で埋める
-        if ($adjustedContents['phoneNumber'] === "") {
-            $adjustedContents['phoneNumber'] = "00000000000";
-        }
-
         // 電話番号のハイフン除去
         if
         (
@@ -43,13 +37,6 @@ class Submit {
         ) {
             str_replace(array('-', 'ー'), '', $adjustedContents['phoneNumber']);
         }
-
-
-        // 年齢欄が空の場合,0歳とする
-        if ($adjustedContents['age'] === "") {
-            $adjustedContents['age'] = 0;
-        }
-
         return $adjustedContents;
     }
 
@@ -80,10 +67,11 @@ class Submit {
             $validationItems["isEmailAddressAvailable"] = false;
         }
 
-        // 電話番号の確認
+        // 電話番号の確認(必須ではない)
         // 電話番号が有効ではない場合
         if
         (
+            isset($contents['phoneNumber']) &&
             !preg_match
             (
                 "/^[0-9]{2,4}-?[0-9]{2,9}-?[0-9]{3,4}$/",
