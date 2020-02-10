@@ -1,82 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>お問い合わせフォーム</title>
+    <link rel="stylesheet" href="reboot.css">
+    <link rel="stylesheet" href="Mystyle.css">
+</head>
+
+<body>
+    <header>
+        <div id="header">
+            <p class="title">Form</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="form_wrapper">
+            <div class="form_description">
+                <h1 class="form_title">お問い合わせフォーム ご確認</h1>
+            </div>
+
+            <div id="form_content_wrapper" class="form_content_wrapper">
 <?php
+require('items.php');
+require('validation.php');
 
-/**
- * ajax通信のリクエストか判定する
- *
- * @return bool
- */
-function isAjax() {
-    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-        return true;
+$items = FormItems::items();
+$validation = new Validation($_POST);
+
+$results = $validation->all();
+
+foreach($items as $item => $itemJa) {
+
+    echo '<div class="form_content">';
+
+    echo "<h2>".$itemJa."</h2>";
+
+    $id = ' id="'.$item.'" ';
+    $value = ' value="'.$_POST[$item].'" ';
+
+    if ($results[$item]) {
+        echo '<p'.$id.$value.'>'.$_POST[$item].'</p>';
     } else {
-        return false;
+        echo '<p'.$id.$value.'class="required">'.$_POST[$item].'</p>';
     }
+
+    echo "</div>";
 }
 
-/**
- * リクエストされたお問い合わせの内容のバリデーション
- *
- * @param $data56i
- * @return array
- */
-function validation($data){
-    $requestLen = lenght($data);
-    $requierList = [
-        'mail',
-        're_mail',
-        'name',
-        'type',
-        'content'
-    ];
+if (!in_array(get_object_vars($results), false)) {
+    echo '<button type="button" class="but" onClick="submit();">送信</button>';
+}
+?>
+            </div>
+        </div>
+    </main>
 
-    for ($i=0; $i < ($requestLen-1); $i++) {
-        if ( !$data[$requestLen[$i]] ) {
-            return [
-                'status' => false,
-                'msg' => '必須項目が入力されていません'
-            ];
+    <footer></footer>
+
+    <script>
+        const submit = async () => {
+
+            try {
+                const response = await fetch("submit.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json;charset=utf-8"
+                    },
+                    mode: "same-origin",
+                    body: '<?php echo json_encode($_POST); ?>'
+                });
+                console.log(await response.json());
+
+                if (!response.ok) throw new Error("サーバ側のエラーにより、サーバへ送信できませんでした。");
+
+            } catch (error) {
+                alert(error);
+            }
         }
-    }
+    </script>
+</body>
 
-    /* メールアドレスの整合性確認 */
-    if ($data['mail'] !== $data['re_mail']) {
-        return [
-            'status' => false,
-            'msg' => 'メールアドレスが一致しません'
-        ];
-    } elseif ( !preg_match("/^([a-zA-Z0-9_\-\.]+)\@([a-zA-Z0-9\-\]+).\([a-zA-Z0-9]{2,20})$/", $data['mail'])){
-        return [
-            'status' => false,
-            'msg' => 'このメールアドレスは使用できません'
-        ];
-    }
-
-    /* 電話番号の形式チェック */
-    if(preg_match("/^[0-9]{2,4}-[0-9]{2,9}-[0-9]{3,4}$/", $data['phone_num'])){
-        str_replace(array('-', 'ー'), '', $data['phone_num']);
-    } elseif (!preg_match("/^[0-9]{10,11}$/",$data['phone_num'])) {
-        return [
-            'status' => false,
-            'msg' => 'この電話番号は使用できません'
-        ];
-    }
-
-    return [
-        'status' => true,
-        'data' => $data
-    ];
-}
-
-if (!isAjax()) {
-    header('location:index.php');
-} else {
-    /*
-        バリデーション処理の例はこんな感じ、リクエストを受けたらまずそのデータの整合性を確認する。
-        [プロトコル設計（例）]
-        サーバー側は
-        ・バリデーションに成功したかどうか(必須)
-        ・フロント側への通知メッセージ(あると良い)
-        ・フロント側へのデータ転送(phpファイルでもこれはhtmlでデータの表示ができるので好きな奴をいい感じによろしく)
-    */
-    validation($_POST);
-}
+</html>

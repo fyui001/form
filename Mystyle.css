@@ -1,67 +1,68 @@
 header {
-  background-color:#26d0c9;
-  padding-top:3px;
-  color:#fff;
+    background-color:#26d0c9;
+    padding-top:3px;
+    color:#fff;
 }
 
-#header .title{
-  text-align: left;
-  font-size:50px;
+#header .title {
+    text-align: center;
+    font-size:50px;
 }
 
-.form_wrapper{
-  width:80%;
-  padding:40px;
-  margin:40px auto;
-  text-align: center;
+.form_wrapper {
+    width:80%;
+    padding:40px;
+    margin:40px auto;
+    text-align: center;
 }
 
-.form_description{
-  border-bottom: 1px solid #000 ;
-  text-align: left;
+.form_description {
+    border-bottom: 1px solid #000 ;
+    text-align: left;
 }
 
-.form_titile {
-  border-left: solid 7px #26d0c9;
-  padding: 5px;
-  margin-bottom: 25px;
+.form_title {
+    border-left: solid 7px #26d0c9;
+    padding: 5px;
+    margin-bottom: 25px;
+    text-align: left;
 }
 
-.description{
-  margin:0 auto;
-  font-size:15px;
+.description {
+    margin:0 auto;
+    font-size:15px;
 }
 
 .form_content {
-  text-align: left;
-  border-bottom:1px solid #000;
-  padding-top:20px;
-  padding-bottom:20px;
+    text-align: left;
+    border-bottom:1px solid #000;
+    padding-top:20px;
+    padding-bottom:20px;
 }
 
-textarea{
-  width:100%;
-  height:30%;
+textarea {
+    width:100%;
+    height:30%;
 }
 
-.required{
-  color:red;
+.required {
+    color:red;
 }
 
 .form_wrapper .but {
-  margin: 30px;
-  lenght: 30%;
-  display: inline-block;
-  padding: 0.3em 3em;
-  font-size: 30px;
-  text-decoration: none;
-  color: #26d0c9;
-  border: solid 2px #26d0c9;
-  border-radius: 3px;
-  transition: .4ms;
+    margin: 30px;
+    width: 30%;
+    display: inline-block;
+    padding: 0.3em 3em;
+    font-size: 30px;
+    text-decoration: none;
+    color: #26d0c9;
+    border: solid 2px #26d0c9;
+    border-radius: 3px;
+    transition: .4ms;
 }
 
 .but:hover {
-  background-color: #26d0c9;
-  color: #ffff;
+    background-color: #26d0c9;
+    color: #ffff;
 }
