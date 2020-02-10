@@ -63,10 +63,6 @@ if (!in_array(get_object_vars($results), false)) {
     <script>
         const submit = async () => {
 
-            const contents = <?php echo json_encode($_POST); ?>
-
-            console.log(JSON.stringify(contents));
-
             try {
                 const response = await fetch("submit.php", {
                     method: "POST",
@@ -74,7 +70,7 @@ if (!in_array(get_object_vars($results), false)) {
                         "Content-Type": "application/json;charset=utf-8"
                     },
                     mode: "same-origin",
-                    body: JSON.stringify(contents)
+                    body: '<?php echo json_encode($_POST); ?>'
                 });
                 console.log(await response.json());
 
