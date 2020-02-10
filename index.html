@@ -17,7 +17,7 @@
     </header>
 
     <main>
-        <div id="form" class="form_wrapper">
+        <div class="form_wrapper">
             <div class="form_description">
                 <h1 class="form_title">お問い合わせフォーム</h1>
                 <div class="description">
@@ -27,80 +27,81 @@
                 </div>
             </div>
 
-            <div id="form_content_wrapper" class="form_content_wrapper">
+            <form action="confirm.php" method="POST" name="form" id=form>
+                <div id="form_content_wrapper" class="form_content_wrapper">
+                    <!-- メールアドレス -->
+                    <div class="form_content">
+                        <h2>メールアドレス<span class="required">(必須)</span></h2>
+                        <div class="mail">
+                            <label>
+                                <p>ご返信先メールアドレス</p>
+                                <input type="text" id="email" name="email" autocomplete="off" required>
+                            </label>
+                        </div>
+                        <div class="mail_sub">
+                            <label>
+                                <p>確認のため、もう一度入力してください。</p>
+                                <input type="text" id="re_enter_email" name="re_enter_email" autocomplete="off" required>
+                            </label>
+                        </div>
+                    </div>
 
-                <!-- メールアドレス -->
-                <div class="form_content">
-                    <h2>メールアドレス<span class="required">(必須)</span></h2>
-                    <div class="mail">
+                    <!-- 名前 -->
+                    <div class="form_content">
                         <label>
-                            <p>ご返信先メールアドレス</p>
-                            <input type="text" id="mail" name="mail" autocomplete="off" required>
+                            <h2>氏名<span class="required">(必須)</span></h2>
+                            <input type="text" id="name" name="name" autocomplete="off" required>
+                        </label>
+
+                    </div>
+
+                    <!--年齢-->
+                    <div class="form_content">
+                        <label>
+                            <h2>年齢</h2>
+                            <select name="age" id="age_selector">
+
+                            </select>
                         </label>
                     </div>
-                    <div class="mail_sub">
+
+                    <!-- 電話番号 -->
+                    <div class="form_content">
                         <label>
-                            <p>確認のため、もう一度入力してください。</p>
-                            <input type="text" id="r_mail" name="r_mail" autocomplete="off" required>
+                            <h2>ご連絡先電話番号</h2>
+                            <input type="tel" id="phone_number" name="phone_number" value="" autocomplete="off" />
                         </label>
                     </div>
-                </div>
 
-                <!-- 名前 -->
-                <div class="form_content">
-                    <label>
-                        <h2>氏名<span class="required">(必須)</span></h2>
-                        <input type="text" id="name" name="name" autocomplete="off" required>
-                    </label>
-
-                </div>
-
-                <!--年齢-->
-                <div class="form_content">
-                    <label>
-                        <h2>年齢</h2>
-                        <select name="age" id="age_selector">
-
-                        </select>
-                    </label>
-                </div>
-
-                <!-- 電話番号 -->
-                <div class="form_content">
-                    <label>
-                        <h2>ご連絡先電話番号</h2>
-                        <input type="tel" id="phone_number" name="phone_number" value="" autocomplete="off" />
-                    </label>
-                </div>
-
-                <!-- 問い合わせ種類 -->
-                <div class="form_content">
-                    <label>
-                        <h2>お問い合わせの種類 <span class="required">(必須)</span></h2>
-                        <select id="type" name="types" class="types" required>
-                            <option value="">選択してください</option>
-                            <option value="料金に関するお問い合わせ">料金に関するお問い合わせ</option>
-                            <option value="サービスに関するお問い合わせ">サービスに関するお問い合わせ</option>
-                            <option value="ご意見、ご要望">ご意見、ご要望</option>
-                            <option value="その他お問い合わせ">その他お問い合わせ</option>
-                        </select>
-                    </label>
-                </div>
-
-                <!-- お問い合わせ内容 -->
-                <div class="form_content">
-                    <div class="contents">
+                    <!-- 問い合わせ種類 -->
+                    <div class="form_content">
                         <label>
-                            <h2>お問い合わせの内容<span class="required">(必須)</span></h2>
-                            <p>200文字まで</p>
-                            <textarea id="content" name="content" maxlength="200" class="content" required></textarea>
+                            <h2>お問い合わせの種類 <span class="required">(必須)</span></h2>
+                            <select id="type" name="type" class="type" required>
+                                <option value="">選択してください</option>
+                                <option value="料金に関するお問い合わせ">料金に関するお問い合わせ</option>
+                                <option value="サービスに関するお問い合わせ">サービスに関するお問い合わせ</option>
+                                <option value="ご意見、ご要望">ご意見、ご要望</option>
+                                <option value="その他お問い合わせ">その他お問い合わせ</option>
+                            </select>
                         </label>
                     </div>
+
+                    <!-- お問い合わせ内容 -->
+                    <div class="form_content">
+                        <div class="contents">
+                            <label>
+                                <h2>お問い合わせの内容<span class="required">(必須)</span></h2>
+                                <p>200文字まで</p>
+                                <textarea id="content" name="content" maxlength="200" class="content"
+                                    required></textarea>
+                            </label>
+                        </div>
+                    </div>
+
+                    <input type="submit" class="but" value="確認"/>
                 </div>
-
-                <button type="button" class="but" onClick="form.confirm();">確認</button>
-            </div>
-
+            </form>
         </div>
     </main>
 
@@ -130,103 +131,6 @@
         }
 
         document.body.onload = age;
-
-        class Form {
-            constructor() {
-                console.log('called!');
-
-                this.prevHtml = "";
-                this.PrevContents = this.content;
-                this.response = {};
-            }
-
-            get form() {
-                return document.getElementById('form');
-            }
-
-            get contents() {
-                const ageSelector = document.getElementById('age_selector');
-                const typeSelector = document.getElementById('type');
-
-                return {
-                    mail: document.getElementById('mail').value,
-                    reMail: document.getElementById('r_mail').value,
-                    name: document.getElementById('name').value,
-                    age: ageSelector.options[ageSelector.selectedIndex].value,
-                    phoneNumber: document.getElementById('phone_number').value,
-                    type: typeSelector.options[typeSelector.selectedIndex].value,
-                    content: document.getElementById('content').value
-                };
-            }
-
-            writeHtml(html) {
-                this.form.innerHTML = html;
-            }
-
-            validation() {
-            }
-
-            confirm() {
-                this.PrevContents = this.contents;
-                this.prevHtml = this.form.innerHTML;
-
-                writeHtml(
-                    '<h1 class="form_title">確認</h1>' +
-                    '<div class=form_content>' +
-                    '<p>以下の内容で送信します。</p>' +
-                    '<h2 class=form_content>メールアドレス</h2>' +
-                    `<p>${contents.mail}</p>` +
-                    '<h2 class=form_content>お名前</h2>' +
-                    `<p>${contents.name}</p>` +
-                    '<h2 class=form_content>ご年齢</h2>' +
-                    `<p>${contents.age}</p>` +
-                    '<h2 class=form_content>電話番号</h2>' +
-                    `<p>${contents.phoneNumber}</p>` +
-                    '<h2 class=form_content>お問い合わせの種類</h2>' +
-                    `<p>${contents.type}</p>` +
-                    '<h2 class=form_content>お問い合わせの内容</h2>' +
-                    `<p>${contents.content}</p>` +
-                    '</div>' +
-                    '<button type="button" class="but" onClick="form.cancel();">キャンセル</button>' +
-                    '<button type="button" class="but" onClick="form.submit();">送信</button>'
-                );
-            }
-
-            async submit() {
-                try {
-                    const _response = await fetch("submit.php", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json;charset=utf-8"
-                        },
-                        mode: "same-origin",
-                        body: JSON.stringify(this.contents)
-                    });
-
-                    if (!_response.ok) throw new Error("サーバ側のエラーにより、サーバへ送信できませんでした。");
-
-                    Promise.resolve(response = await _response.json());
-                } catch (error) {
-                    Promise.reject(error);
-                }
-            }
-
-            cancel() {
-                this.form.innerHTML = this.prevHtml;
-                document.getElementById('mail').value = this.PrevContents.mail;
-                document.getElementById('r_mail').value = this.PrevContents.rMail;
-                document.getElementById('name').value = this.PrevContents.name;
-                document.getElementById('age_selector').value = this.PrevContents.age;
-                document.getElementById('type').value = this.PrevContents.type;
-                document.getElementById('phone_number').value = this.PrevContents.phoneNumber;
-                document.getElementById('content').value = this.PrevContents.content;
-
-                this.prevHtml = this.form.innerHTML;
-                this.PrevContents = this.contents;
-            }
-        }
-
-        const form = new Form();
     </script>
 </body>
 
