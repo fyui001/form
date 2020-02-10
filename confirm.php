@@ -26,10 +26,11 @@
 <?php
 require('items.php');
 require('validation.php');
+
+$items = FormItems::items();
 $validation = new Validation($_POST);
 
 $results = $validation->all();
-$items = FormItems::items();
 
 foreach($items as $item => $itemJa) {
 
@@ -37,13 +38,13 @@ foreach($items as $item => $itemJa) {
 
     echo "<h2>".$itemJa."</h2>";
 
-    $id = ' id='.'"'.$item.'"';
-    $value = ' value='.'"'.$_POST[$item].'"';
+    $id = ' id="'.$item.'" ';
+    $value = ' value="'.$_POST[$item].'" ';
 
     if ($results[$item]) {
         echo '<p'.$id.$value.'>'.$_POST[$item].'</p>';
     } else {
-        echo '<p'.$id.$value.' class="required">'.$_POST[$item].'</p>';
+        echo '<p'.$id.$value.'class="required">'.$_POST[$item].'</p>';
     }
 
     echo "</div>";
