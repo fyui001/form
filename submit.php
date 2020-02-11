@@ -36,7 +36,7 @@ class Submit {
             type VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL,
             PRIMARY KEY(id)
         )
-        DEFAULT CHARSET=utf8;
+        DEFAULT CHARSET=utf8mb4;
     */
     private function database($post) {
         $dsn = 'mysql:dbname=form; host=localhost; charset=utf8;';
@@ -44,21 +44,19 @@ class Submit {
         $password = 'form';
         $tableName = 'form';
 
-        $sql = "INSERT INTO `{$tableName}`";
-        $sql .= '(email, re_enter_email, name, age, phone_number, type, content)';
-        $sql .= 'VALUES';
-        $sql .= "({$post['email']}, {$post['re_enter_email']}, :name, {$post['age']}, {$post['phone_number']}, {$post['type']}, :content)";
-
         try {
             $database = new PDO($dsn, $user, $password);
             $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $database->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
+            $sql = "INSERT INTO `{$tableName}`";
+            $sql .= '(email, re_enter_email, name, age, phone_number, type, content)';
+            $sql .= 'VALUES';
+            $sql .= "({$post['email']}, {$post['re_enter_email']}, :name, {$post['age']}, {$post['phone_number']}, {$post['type']}, :content)";
+
             $statement = $database->prepare($sql);
-
-            $statement->bindParam(':name', $post['name']);
-            $statement->bindParam(':content', $post['content']);
-
+            $statement->bindValue(':name', $post['name']);
+            $statement->bindValue(':content', $post['content']);
             $statement->execute();
 
             return [
