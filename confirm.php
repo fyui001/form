@@ -102,13 +102,15 @@ if (!in_array(false, array_values($results))) {
 
                 const response = await _response.json();
 
-                if(response.database) {
-                    writeHtml("送信完了", "送信が完了しました。後ほどご連絡いたします。");
-                } else if (!response.database && response.validation) {
+                console.log(response);
+
+                if (!response.database && response.validation) {
                     throw new Error("データベースでの追加時にエラーが発生しました。");
                 } else if (!response.database && !response.validation) {
                     throw new Error("不正な値が渡されました。最初からもう一度やり直してください");
                 }
+
+                writeHtml("送信完了", "送信が完了しました。後ほどご連絡いたします。")
             } catch (error) {
                 writeHtml("送信失敗", error);
             }

@@ -8,16 +8,19 @@ class Submit {
         $validationResults = $validation->all();
 
         $submitResult = [
-            "validation" => false,
-            "database" => false
+            'validation' => false,
+            'database' => false,
+            'message' => ''
         ];
 
         if (!in_array(false, array_values($validationResults))) {
             $submitResult['validation'] = true;
             $databaseResult = $this->database($post);
 
-            if ($databaseResult) {
+            if ($databaseResult['state']) {
                 $submitResult['database'] = true;
+            } else {
+                $submitResult['message'] = $databaseResult['message'];
             }
         }
 
@@ -35,7 +38,7 @@ class Submit {
         )
         DEFAULT CHARSET=utf8;
     */
-    private function database($insertPost) {
+    private function database($post) {
         $dsn = 'mysql:dbname=form; host=localhost; charset=utf8;';
         $user = 'form';
         $password = 'form';
@@ -43,22 +46,8 @@ class Submit {
 
         $sql = "INSERT INTO `{$tableName}`";
         $sql .= '(email, re_enter_email, name, age, phone_number, type, content)';
-        $sql .= "VALUES";
-        $sql .= "(";
-        // mail: VARCHAR(255)
-        $sql .= "'{$insertPost['email']}',";
-        $sql .= "'{$insertPost['re_enter_email']}',";
-        // name: VARCHAR(255)
-        $sql .= "'{$insertPost['name']}',";
-        // age: INT(11)
-        $sql .= "{$insertPost['age']},";
-        // phoneNumber: VARCHAR(255)
-        $sql .= "'{$insertPost['phone_number']}',";
-        // type: VARCHAR(255)
-        $sql .= "'{$insertPost['type']}',";
-        // content: VARCHAR(255)
-        $sql .= "'{$insertPost['content']}'";
-        $sql .= ");";
+        $sql .= 'VALUES';
+        $sql .= "({$post['email']}, {$post['re_enter_email']}, :name, {$post['age']}, {$post['phone_number']}, {$post['type']}, :content)";
 
         try {
             $database = new PDO($dsn, $user, $password);
@@ -66,11 +55,21 @@ class Submit {
             $database->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
             $statement = $database->prepare($sql);
+
+            $statement->bindParam(':name', $post['name']);
+            $statement->bindParam(':content', $post['content']);
+
             $statement->execute();
 
-            return true;
+            return [
+                'state' => true,
+                'message' => ''
+            ];
         } catch(PDOException $error) {
-            return false;
+            return [
+                'state' => false,
+                'message' => $error->getMessage()
+            ];
         }
     }
 

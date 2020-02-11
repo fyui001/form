@@ -12,23 +12,16 @@ class Validation {
                 $this->contents['email'],
                 $this->contents['re_enter_email']
             ),
-            'name' => true,
+            'name' => !empty($this->contents['name']),
             'age' => $this->age($this->contents['age']),
             'phone_number' => $this->phoneNumber($this->contents['phone_number']),
             'type' => $this->type($this->contents['type']),
-            'content' => true
+            'content' => !empty($this->contents['content'])
         ];
     }
 
     private function email($email) {
-        if
-        (
-            preg_match
-            (
-                "/^[a-zA-Z0-9_\-\.]+\@[a-zA-Z0-9_\-\.]+\.[a-zA-Z0-9]+$/",
-                $email
-            )
-        ) {
+        if (preg_match("/^[a-zA-Z0-9_\-\.]+\@[a-zA-Z0-9_\-\.]+\.[a-zA-Z0-9]+$/", $email)) {
             return true;
         } else {
             return false;
@@ -45,11 +38,7 @@ class Validation {
     }
 
     private function age($age) {
-        if
-        (
-            isset($age) ||
-            preg_match("/^[0-9]{1,2}$/", $age)
-        ) {
+        if ($age === '' || preg_match("/^[0-9]{1,2}$/", $age)) {
             return true;
         } else {
             return false;
@@ -58,14 +47,7 @@ class Validation {
 
     private function phoneNumber($phoneNumber) {
         // https://www.soumu.go.jp/main_sosiki/joho_tsusin/top/tel_number/number_shitei.html
-        if
-        (
-            isset($phoneNumber) ||
-            preg_match(
-                "/^0[0-9]{1,4}-?[0-9]{1,4}-?[0-9]{4,}$/",
-                $phoneNumber
-            )
-        ) {
+        if($phoneNumber === '' || preg_match("/^0[0-9]{1,4}-?[0-9]{1,4}-?[0-9]{4,}$/", $phoneNumber)) {
             return true;
         } else {
             return false;
