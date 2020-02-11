@@ -1,146 +1,64 @@
 <?php
+require('items.php');
+require('validation.php');
+
 class Submit {
-    function __construct($gottenPost) {
-        $contents = $this->adjustContents(json_decode($gottenPost, true));
-        $validationStates = $this->validation($contents);
+    function __construct($post) {
+        $validation = new Validation($post);
+        $validationResults = $validation->all();
 
-        $response = [
-            "validationStates" => $validationStates,
-            "contents" => $contents,
-            "database" => ""
+        $submitResult = [
+            "validation" => false,
+            "database" => false
         ];
 
-        if ($this->isValidationPassed($validationStates)) {
-            $databaseResult = $this->insertDatabase($contents);
+        if (!in_array(false, array_values($validationResults))) {
+            $submitResult['validation'] = true;
+            $databaseResult = $this->database($post);
 
-            $response["database"] = $databaseResult;
-        } else {
-            $response["database"] = [
-                "successful" => false,
-                "error" => "validation error",
-            ];
-        }
-
-        echo json_encode($response);
-    }
-
-    private function adjustContents($contents) {
-        $adjustedContents = $contents;
-        // 電話番号のハイフン除去
-        if
-        (
-            preg_match
-            (
-                "/^[0-9]{2,4}-[0-9]{2,9}-[0-9]{3,4}$/",
-                $adjustedContents['phoneNumber']
-            )
-        ) {
-            str_replace(array('-', 'ー'), '', $adjustedContents['phoneNumber']);
-        }
-        return $adjustedContents;
-    }
-
-    private function validation($contents) {
-        $validationItems =  [
-            "isMailTheSameAsReMail" => true,
-            "isEmailAddressAvailable" => true,
-            "isPhoneNumberAvailable" => true,
-            "isNotTypeEmpty" => true,
-            "isNotContentEmpty" => true
-        ];
-
-        // メールアドレスの確認
-        // 入力と再入力が一致しない場合
-        if ($contents["mail"] !== $contents["reMail"]) {
-            $validationItems["isMailTheSameAsReMail"] = false;
-        }
-
-        // メールアドレスが有効ではない場合
-        if
-        (
-            !preg_match
-            (
-                "/^([a-zA-Z0-9_\-\.]+)\@([a-zA-Z0-9\-\]+).\([a-zA-Z0-9]{2,20})$/",
-                $contents['mail']
-            )
-        ) {
-            $validationItems["isEmailAddressAvailable"] = false;
-        }
-
-        // 電話番号の確認(必須ではない)
-        // 電話番号が有効ではない場合
-        if
-        (
-            isset($contents['phoneNumber']) &&
-            !preg_match
-            (
-                "/^[0-9]{2,4}-?[0-9]{2,9}-?[0-9]{3,4}$/",
-                $contents['phoneNumber']
-            )
-        ) {
-            $validationItems["isPhoneNumberAvailable"] = false;
-        }
-
-        // 問い合わせ内容の確認
-        // 問い合わせ内容が空の場合
-        if ($contents['type'] === "") {
-            $validationItems["isNotTypeEmpty"] = false;
-        }
-
-        // テキストボックス入力の確認
-        // テキストボックス入力が空の場合
-        if ($contents['content'] === "") {
-            $validationItems["isNotContentEmpty"] = false;
-        }
-
-        return $validationItems;
-    }
-
-    private function isValidationPassed($validationItems) {
-        foreach($validationItems as $_ => $state) {
-            if ($state === false) {
-                return false;
+            if ($databaseResult) {
+                $submitResult['database'] = true;
             }
         }
 
-        return true;
+        echo json_encode($submitResult);
     }
 
     /*
         CREATE TABLE form
         (
             id INT(11) NOT NULL AUTO_INCREMENT,
-            mail VARCHAR(255) NOT NULL, re_mail VARCHAR(255) NOT NULL ,
+            email VARCHAR(255) NOT NULL, re_enter_email VARCHAR(255) NOT NULL ,
             name VARCHAR(255) NOT NULL, age INT(11), phone_number VARCHAR(255),
             type VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL,
             PRIMARY KEY(id)
         )
         DEFAULT CHARSET=utf8;
     */
-    private function insertDatabase($insertData) {
+    private function database($insertPost) {
         $dsn = 'mysql:dbname=form; host=localhost; charset=utf8;';
         $user = 'form';
         $password = 'form';
         $tableName = 'form';
 
         $sql = "INSERT INTO `{$tableName}`";
-        $sql .=  "(mail, re_mail, name, age, phone_number, type, content)";
+        $sql .= '(email, re_enter_email, name, age, phone_number, type, content)';
         $sql .= "VALUES";
         $sql .= "(";
         // mail: VARCHAR(255)
-        $sql .= "'{$insertData['mail']}',";
-        $sql .= "'{$insertData['reMail']}',";
+        $sql .= "'{$insertPost['email']}',";
+        $sql .= "'{$insertPost['re_enter_email']}',";
         // name: VARCHAR(255)
-        $sql .= "'{$insertData['name']}',";
+        $sql .= "'{$insertPost['name']}',";
         // age: INT(11)
-        $sql .= "{$insertData['age']},";
+        $sql .= "{$insertPost['age']},";
         // phoneNumber: VARCHAR(255)
-        $sql .= "'{$insertData['phoneNumber']}',";
+        $sql .= "'{$insertPost['phone_number']}',";
         // type: VARCHAR(255)
-        $sql .= "'{$insertData['type']}',";
+        $sql .= "'{$insertPost['type']}',";
         // content: VARCHAR(255)
-        $sql .= "'{$insertData['content']}'";
-        $sql .= ")";
+        $sql .= "'{$insertPost['content']}'";
+        $sql .= ");";
 
         try {
             $database = new PDO($dsn, $user, $password);
@@ -150,19 +68,13 @@ class Submit {
             $statement = $database->prepare($sql);
             $statement->execute();
 
-            return [
-                "successful" => true,
-                "error" => ""
-            ];
+            return true;
         } catch(PDOException $error) {
-            return [
-                "successful" => false,
-                "error" => $error->getMessage()
-            ];
+            return false;
         }
     }
 
 }
 
-new Submit(file_get_contents("php://input"));
+new Submit(json_decode(file_get_contents('php://input'), true));
 ?>
