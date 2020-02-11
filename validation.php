@@ -37,7 +37,7 @@ class Validation {
     }
 
     private function reEnterEmail($email, $reEnterEmail) {
-        if ($email !== '' && $email === $reEnterEmail) {
+        if (isset($email) && $email === $reEnterEmail) {
             return true;
         } else {
             return false;
@@ -46,7 +46,7 @@ class Validation {
 
     private function age($age) {
         if
-        (   $age === '' ||
+        (   isset($age) ||
             preg_match("/^[0-9]{1,2}$/", $age)
         ) {
             return true;
@@ -59,7 +59,7 @@ class Validation {
         // https://www.soumu.go.jp/main_sosiki/joho_tsusin/top/tel_number/number_shitei.html
         if
         (
-            $phoneNumber === '' ||
+            isset($phoneNumber) ||
             preg_match(
                 "/^0[0-9]{1,4}-?[0-9]{1,4}-?[0-9]{4,}$/",
                 $phoneNumber
