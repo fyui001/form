@@ -1,3 +1,37 @@
+<?php
+require('items.php');
+require('validation.php');
+
+$validation = new Validation($_POST);
+$results = $validation->all();
+$html = '';
+
+foreach(FormItems::$items as $item => $itemJa) {
+    $sanitizedContent = htmlspecialchars($_POST[$item], ENT_QUOTES);
+    $id = ' id="'.$item.'" ';
+    $value = ' value="'.$sanitizedContent.'" ';
+
+    $html .= '<div class="form_content">';
+    $html .= '<h2>'.$itemJa.'</h2>';
+
+    if ($results[$item]) {
+        $html .= '<p' . $id . $value . '>';
+        $html .= $sanitizedContent;
+        $html .= '</p>';
+    } else {
+        $html .= '<p' . $id . $value . 'class="required">';
+        $html .= $sanitizedContent . ' は不正な値です。戻って再入力をしてください。';
+        $html .= '</p>';
+    }
+
+    $html .= "</div>";
+}
+
+if (!in_array(false, array_values($results))) {
+    $html .= '<button type="button" class="but" onClick="submit();">送信</button>';
+}
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -23,38 +57,9 @@
             </div>
 
             <div id="form_content_wrapper" class="form_content_wrapper">
-<?php
-require('items.php');
-require('validation.php');
 
-$validation = new Validation($_POST);
-$results = $validation->all();
+            <?php echo $html;?>
 
-foreach(FormItems::$items as $item => $itemJa) {
-    $sanitized = htmlspecialchars($_POST[$item], ENT_QUOTES);
-    $id = ' id="'.$item.'" ';
-    $value = ' value="'.$sanitized.'" ';
-
-    echo '<div class="form_content">';
-    echo '<h2>'.$itemJa.'</h2>';
-
-    if ($results[$item]) {
-        echo '<p' . $id . $value . '>';
-        echo  $sanitized;
-        echo  '</p>';
-    } else {
-        echo '<p' . $id . $value . 'class="required">';
-        echo $sanitized;
-        echo ' は不正な値です。戻って再入力をしてください。</p>';
-    }
-
-    echo "</div>";
-}
-
-if (!in_array(false, array_values($results))) {
-    echo '<button type="button" class="but" onClick="submit();">送信</button>';
-}
-?>
             </div>
         </div>
     </main>
