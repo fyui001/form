@@ -67,7 +67,6 @@ if (!in_array(false, array_values($results))) {
     <footer></footer>
 
     <script>
-
         const writeHtml = (title, message) => {
             let page = '';
                 page += '<div class="form_description">';
@@ -106,8 +105,6 @@ if (!in_array(false, array_values($results))) {
                 if (!_response.ok) throw new Error("サーバ側のエラーにより、サーバへ送信できませんでした。");
 
                 const response = await _response.json();
-
-                console.log(response);
 
                 if (!response.database && response.validation) {
                     throw new Error("データベースでの追加時にエラーが発生しました。");

@@ -9,18 +9,15 @@ class Submit {
 
         $submitResult = [
             'validation' => false,
-            'database' => false,
-            'message' => ''
+            'database' => false
         ];
 
         if (!in_array(false, array_values($validationResults))) {
             $submitResult['validation'] = true;
             $databaseResult = $this->database($post);
 
-            if ($databaseResult['state']) {
+            if ($databaseResult) {
                 $submitResult['database'] = true;
-            } else {
-                $submitResult['message'] = $databaseResult['message'];
             }
         }
 
@@ -52,22 +49,21 @@ class Submit {
             $sql = "INSERT INTO `{$tableName}`";
             $sql .= '(email, re_enter_email, name, age, phone_number, type, content)';
             $sql .= 'VALUES';
-            $sql .= "({$post['email']}, {$post['re_enter_email']}, :name, {$post['age']}, {$post['phone_number']}, {$post['type']}, :content)";
+            $sql .= "(:email, :re_enter_email, :name, :age, :phone_number, :type, :content)";
 
             $statement = $database->prepare($sql);
-            $statement->bindValue(':name', $post['name']);
-            $statement->bindValue(':content', $post['content']);
+            $statement->bindValue(':email', $post['email'], PDO::PARAM_STR);
+            $statement->bindValue(':re_enter_email', $post['re_enter_email'], PDO::PARAM_STR);
+            $statement->bindValue(':name', $post['name'], PDO::PARAM_STR);
+            $statement->bindValue(':age', !empty($post['age']) ? $post['age'] : 0, PDO::PARAM_INT);
+            $statement->bindValue(':phone_number', $post['phone_number'], PDO::PARAM_STR);
+            $statement->bindValue(':type', $post['type'], PDO::PARAM_STR);
+            $statement->bindValue(':content', $post['content'], PDO::PARAM_STR);
             $statement->execute();
 
-            return [
-                'state' => true,
-                'message' => ''
-            ];
+            return true;
         } catch(PDOException $error) {
-            return [
-                'state' => false,
-                'message' => $error->getMessage()
-            ];
+            return true;
         }
     }
 

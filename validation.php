@@ -38,7 +38,7 @@ class Validation {
     }
 
     private function age($age) {
-        if ($age === '' || preg_match("/^[0-9]{1,2}$/", $age)) {
+        if (empty($age) || preg_match("/^[0-9]{1,2}$/", $age)) {
             return true;
         } else {
             return false;
@@ -47,7 +47,7 @@ class Validation {
 
     private function phoneNumber($phoneNumber) {
         // https://www.soumu.go.jp/main_sosiki/joho_tsusin/top/tel_number/number_shitei.html
-        if($phoneNumber === '' || preg_match("/^0[0-9]{1,4}-?[0-9]{1,4}-?[0-9]{4,}$/", $phoneNumber)) {
+        if(empty($phoneNumber) || preg_match("/^0[0-9]{1,4}-?[0-9]{1,4}-?[0-9]{4,}$/", $phoneNumber)) {
             return true;
         } else {
             return false;
