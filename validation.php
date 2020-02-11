@@ -46,7 +46,8 @@ class Validation {
 
     private function age($age) {
         if
-        (   isset($age) ||
+        (
+            isset($age) ||
             preg_match("/^[0-9]{1,2}$/", $age)
         ) {
             return true;
